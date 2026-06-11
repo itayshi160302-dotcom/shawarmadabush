@@ -147,6 +147,33 @@ orders:row.orders
 
 });
 
+app.post("/update-sales",(req,res)=>{
+
+const { name, sales } = req.body;
+
+db.run(
+`UPDATE workers
+SET sales = sales + ?,
+orders = orders + 1
+WHERE name = ?`,
+[sales, name],
+(err)=>{
+
+if(err){
+return res.status(500).json({
+error:"Server error"
+});
+}
+
+res.json({
+success:true
+});
+
+}
+);
+
+});
+
 app.listen(3000,()=>{
 console.log("Server running on port 3000");
 });

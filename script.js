@@ -53,7 +53,7 @@ try{
 
 const response =
 await fetch(
-"
+
 "https://shawarmadabush.onrender.com/login",
 {
 method:"POST",
@@ -122,6 +122,26 @@ document
 updateManager();
 
 }
+
+window.onload = ()=>{
+
+const worker =
+localStorage.getItem(
+"currentWorker"
+);
+
+if(worker){
+startSystem();
+}
+
+document
+.getElementById("category")
+.addEventListener(
+"change",
+loadProducts
+);
+
+};
 
 // ======================
 // PRODUCTS
@@ -356,29 +376,25 @@ margin:auto;
 </div>
 `;
 
-let data =
-JSON.parse(
-
-localStorage.getItem(
-"worker_"+worker
-)
-
-);
-
-data.sales += Number(total);
-data.orders += 1;
-
-localStorage.setItem(
-
-"worker_"+worker,
-
-JSON.stringify(data)
-
-);
-
-updateManager();
-
+fetch(
+"https://shawarmadabush.onrender.com/update-sales",
+{
+method: "POST",
+headers: {
+"Content-Type": "application/json"
+},
+body: JSON.stringify({
+name: worker,
+sales: Number(total)
+})
 }
+)
+.then(function(){
+updateManager();
+})
+.catch(function(err){
+console.error(err);
+});
 
 // ======================
 // DOWNLOAD IMAGE
@@ -498,38 +514,48 @@ updateManager();
 // STATS
 // ======================
 
-function updateManager(){
+async function updateManager(){
 
-let workers = [];
-let totalSales = 0;
-
-for(let key in localStorage){
-
-if(
-key.startsWith(
-"worker_"
-)
-){
-
-const data =
-JSON.parse(
-localStorage.getItem(key)
+const response =
+await fetch(
+"https://shawarmadabush.onrender.com/workers"
 );
 
-workers.push({
+const workers =
+await response.json();
 
-name:key.replace(
-"worker_",
-""
-),
+let totalSales = 0;
 
-sales:data.sales,
-orders:data.orders
-
+workers.forEach(w=>{
+totalSales += w.sales;
 });
 
-totalSales +=
-data.sales;
+workers.sort(
+(a,b)=>b.sales-a.sales
+);
+
+const ranking =
+document.getElementById(
+"rankingTable"
+);
+
+if(ranking){
+
+ranking.innerHTML = "";
+
+workers.forEach((w,i)=>{
+
+ranking.innerHTML +=
+`
+<tr>
+<td>${i+1}</td>
+<td>${w.name}</td>
+<td>₪${w.sales}</td>
+<td>${w.orders}</td>
+</tr>
+`;
+
+});
 
 }
 
@@ -549,44 +575,6 @@ deleteSelect.innerHTML +=
 <option value="${worker.name}">
 ${worker.name}
 </option>
-`;
-
-});
-
-}
-
-}
-
-workers.sort(
-(a,b)=>
-b.sales-a.sales
-);
-
-const ranking =
-document.getElementById(
-"rankingTable"
-);
-
-if(ranking){
-
-ranking.innerHTML = "";
-
-workers.forEach((w,i)=>{
-
-ranking.innerHTML +=
-
-`
-<tr>
-
-<td>${i+1}</td>
-
-<td>${w.name}</td>
-
-<td>₪${w.sales}</td>
-
-<td>${w.orders}</td>
-
-</tr>
 `;
 
 });
