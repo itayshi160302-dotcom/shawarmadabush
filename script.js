@@ -341,33 +341,20 @@ ${products}
 
 <div class="employee-signature">
 
-${
-typedSignature
-
-?
-
-`<div style="
-font-size:32px;
-font-family:cursive;
+<div style="
+font-family:'Great Vibes', cursive;
+font-size:60px;
 text-align:center;
+margin-top:20px;
 ">
-${typedSignature}
-</div>`
-
-:
-
-`<img
-src="${document.getElementById('signatureCanvas').toDataURL()}"
-style="
-width:250px;
-display:block;
-margin:auto;
-">`
-}
+${worker}
+</div>
 
 <h4>
 חתימת העובד
 </h4>
+
+</div>
 
 </div>
 
@@ -395,6 +382,8 @@ updateManager();
 .catch(function(err){
 console.error(err);
 });
+
+}
 
 // ======================
 // DOWNLOAD IMAGE
@@ -697,6 +686,62 @@ updateManager();
 alert(
 "העובד נמחק"
 );
+
+}
+
+const canvas =
+document.getElementById(
+"signatureCanvas"
+);
+
+if(canvas){
+
+const ctx =
+canvas.getContext("2d");
+
+let drawing = false;
+
+canvas.addEventListener(
+"mousedown",
+()=>{
+drawing = true;
+});
+
+canvas.addEventListener(
+"mouseup",
+()=>{
+drawing = false;
+ctx.beginPath();
+});
+
+canvas.addEventListener(
+"mousemove",
+draw
+);
+
+canvas.addEventListener(
+"touchstart",
+()=>{
+drawing = true;
+}
+);
+
+canvas.addEventListener(
+"touchmove",
+drawTouch
+);
+
+canvas.addEventListener(
+"touchend",
+()=>{
+drawing = false;
+ctx.beginPath();
+}
+);
+
+window.canvas = canvas;
+window.ctx = ctx;
+window.drawing = drawing;
 
 }
 
