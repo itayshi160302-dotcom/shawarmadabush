@@ -281,13 +281,6 @@ document.getElementById(
 "totalPrice"
 ).innerText;
 
-const typedSignature =
-document.getElementById(
-"typedSignature"
-).value;
-
-let products = "";
-
 currentOrder.forEach(item=>{
 
 products +=
