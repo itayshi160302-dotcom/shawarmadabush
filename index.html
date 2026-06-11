@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>שווארמה דבוש 🌯 V3</title>
+
+<link rel="stylesheet" href="style.css">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+
+<!-- LOGIN -->
+
+<div id="loginPage" class="login-page">
+
+<div class="login-card">
+
+<h1>שווארמה דבוש 🌯</h1>
+
+<p>מערכת עובדים</p>
+
+<input
+type="text"
+id="workerNameInput"
+placeholder="שם עובד">
+
+<input
+type="password"
+id="workerPasswordInput"
+placeholder="סיסמה">
+
+<button onclick="login()">
+כניסה למערכת
+</button>
+
+</div>
+
+</div>
+
+<!-- APP -->
+
+<div id="app" class="hidden">
+
+<!-- HEADER -->
+
+<header class="header">
+
+<div class="logo">
+
+ שווארמה דבוש 🌯
+
+</div>
+
+<div class="header-right">
+
+<span id="workerDisplay">
+עובד
+</span>
+
+<button
+class="admin-btn"
+onclick="openManager()">
+
+🔒
+
+</button>
+
+<button
+class="logout-btn"
+onclick="logout()">
+
+🚪
+
+</button>
+
+</div>
+
+</header>
+
+<!-- MAIN -->
+
+<div class="main-grid">
+
+<!-- CREATE ORDER -->
+
+<section class="card">
+
+<h2>יצירת הזמנה</h2>
+
+<div class="form">
+
+<select id="category">
+
+<option value="">
+בחר קטגוריה
+</option>
+
+<option value="shawarma">
+שווארמה
+</option>
+
+<option value="drinks">
+שתייה
+</option>
+
+<option value="extras">
+תוספות
+</option>
+
+</select>
+
+<select id="product">
+
+<option>
+בחר מוצר
+</option>
+
+</select>
+
+<input
+type="number"
+id="quantity"
+value="1"
+min="1">
+
+<button onclick="addItem()">
+
+➕ הוסף להזמנה
+
+</button>
+
+</div>
+
+</section>
+
+<!-- CURRENT ORDER -->
+
+<section class="card">
+
+<h2>הזמנה 🧾</h2>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>מוצר</th>
+<th>כמות</th>
+<th>סה"כ</th>
+
+</tr>
+
+</thead>
+
+<tbody id="invoiceItems">
+
+</tbody>
+
+</table>
+
+<div class="total">
+
+סה"כ:
+
+₪<span id="totalPrice">0</span>
+
+</div>
+
+<div class="signature-box">
+
+<h3>חתימת עובד</h3>
+
+<input
+type="text"
+id="typedSignature"
+placeholder="או כתוב חתימה">
+
+<canvas
+id="signatureCanvas"
+width="350"
+height="120">
+</canvas>
+
+<button onclick="clearSignature()">
+נקה חתימה
+</button>
+
+</div>
+
+<div class="actions">
+
+<button onclick="generateInvoice()">
+
+ צור חשבונית 🧾
+
+</button>
+
+<button onclick="clearInvoice()">
+
+ נקה 🗑️
+
+</button>
+
+</div>
+
+</section>
+
+<!-- RECEIPT -->
+
+<section class="card">
+
+<h2>הצג חשבונית 🧾</h2>
+
+<div
+id="invoicePreview"
+class="receipt-preview">
+
+<p>
+
+לא נוצרה חשבונית
+
+</p>
+
+</div>
+
+<div class="actions">
+
+<button onclick="downloadReceipt()">
+
+ שמור תמונה 📸
+
+</button>
+
+<button onclick="shareReceipt()">
+שתף תמונה 📤
+</button>
+
+</div>
+
+</section>
+
+</div>
+
+</div>
+
+<!-- MANAGER -->
+
+<div
+id="managerModal"
+class="modal hidden">
+
+<div class="modal-content">
+
+<h2>הנהלה 🤴</h2>
+
+<div id="managerLogin">
+
+<input
+type="password"
+id="managerPassword"
+placeholder="סיסמת מנהל">
+
+<button onclick="managerLogin()">
+
+כניסה
+
+</button>
+
+</div>
+
+<div
+id="managerPanel"
+class="hidden">
+
+<div class="manager-stats">
+
+<div class="manager-card">
+
+<h3>מכירות כלליות</h3>
+
+<h1 id="totalSales">
+
+₪0
+
+</h1>
+
+</div>
+
+<div class="manager-card">
+
+<h3>עובד מצטיין</h3>
+
+<h1 id="bestWorker">
+
+אין
+
+</h1>
+
+</div>
+
+</div>
+
+<h3>טבלת עובדים</h3>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>#</th>
+<th>עובד</th>
+<th>מכירות</th>
+<th>הזמנות</th>
+
+</tr>
+
+</thead>
+
+<tbody id="rankingTable">
+
+</tbody>
+
+</table>
+
+<h3>מחיקת עובד</h3>
+
+<select id="deleteWorkerSelect">
+</select>
+
+<button
+class="reset-btn"
+onclick="deleteWorker()">
+
+ מחק עובד 🗑️
+
+</button>
+
+<button
+class="reset-btn"
+onclick="resetSystem()">
+
+איפוס מערכת
+
+</button>
+
+</div>
+
+<button
+class="close-btn"
+onclick="closeManager()">
+
+סגור
+
+</button>
+
+</div>
+
+</div>
+
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+<script src="script.js"></script>
+
+</body>
+
+</html>
